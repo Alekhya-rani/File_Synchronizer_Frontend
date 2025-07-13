@@ -20,8 +20,8 @@ const FolderPairForm = ({ onFolderPairAdded }) => {
     }
   };
   const openFolderPicker = async (setter) => {
-    if (window.electronAPI?.selectFolder) {
-      const selected = await window.electronAPI.selectFolder();
+    if (window?.electronAPI?.selectFolder) {
+      const selected = await window?.electronAPI.selectFolder();
       if (selected) setter(selected);
     } else {
       alert("Folder picker not available in browser. Use Electron app.");
@@ -41,6 +41,7 @@ const FolderPairForm = ({ onFolderPairAdded }) => {
             className="flex-1 border px-3 py-2 rounded"
             placeholder="C:\\Users\\YourName\\Documents"
           />
+          {window?.electronAPI ? (
           <button
             type="button"
             onClick={() => openFolderPicker(setSource)}
@@ -48,6 +49,7 @@ const FolderPairForm = ({ onFolderPairAdded }) => {
           >
             📂 Browse
           </button>
+          ) : null}
         </div>
       </div>
 
