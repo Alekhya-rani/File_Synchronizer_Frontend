@@ -2,6 +2,8 @@
   "name": "frontend18",
   "version": "0.1.0",
   "private": true,
+  "description": "A cross-platform file synchronizer built with Electron + React",
+  "author": "Alekhya Rani Modalavalasa",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -17,19 +19,23 @@
   "main": "main.js",
   "build": {
     "appId": "com.filesync.app",
-    "productName": "File Synchronizer",
+    "productName": "FileSyncApp",
     "files": [
       "build/**/*",
       "main.js",
       "preload.js"
     ],
+    "extraMetadata": {
+    "main": "main.js"
+  },
     "directories": {
       "buildResources": "assets"
     },
     "win": {
       "target": "nsis",
       "icon": "assets/icon.ico"
-    }
+    },
+    "artifactName": "${productName}-setup.${ext}"
   },
   "scripts": {
     "start": "concurrently \"npm run react-start\" \"npm run electron-start\"",
