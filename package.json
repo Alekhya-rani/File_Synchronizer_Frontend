@@ -24,7 +24,8 @@
       "build/**/*",
       "main.js",
       "preload.js",
-      "backend/**/*"
+      "backend/**/*",
+      "public/backend/manage.exe"
     ],
     "extraMetadata": {
     "main": "main.js"

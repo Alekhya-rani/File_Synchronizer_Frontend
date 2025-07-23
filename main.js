@@ -13,17 +13,20 @@ function createWindow() {
     },
   });
 
-  win.loadURL('http://localhost:3000'); // React frontend
+  win.loadURL('http://localhost:3000'); // Your React frontend
 }
 
 function startDjangoServer() {
-  const script = path.join(__dirname, 'backend', 'venv', 'Scripts', 'python.exe');
-  const manage = path.join(__dirname, 'backend', 'manage.py');
-  djangoProcess = spawn(script, [manage, 'runserver', '8000']);
+  const backendExe = path.join(__dirname, 'backend', 'manage.exe'); // compiled EXE
+  djangoProcess = spawn(backendExe, [], {
+    cwd: path.dirname(backendExe),
+    shell: true,
+  });
 
   djangoProcess.stdout.on('data', (data) => {
     console.log(`Django: ${data}`);
   });
+
   djangoProcess.stderr.on('data', (data) => {
     console.error(`Django error: ${data}`);
   });
