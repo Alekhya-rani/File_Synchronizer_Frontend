@@ -1,12 +1,11 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const path = require('path');
+const { spawn } = require('child_process');
 
-const isDev = !app.isPackaged;
-
-let mainWindow;
+let djangoProcess = null;
 
 function createWindow() {
-  mainWindow = new BrowserWindow({
+  const win = new BrowserWindow({
     width: 1000,
     height: 800,
     webPreferences: {
@@ -14,28 +13,28 @@ function createWindow() {
     },
   });
 
-  if (isDev) {
-    mainWindow.loadURL('http://localhost:3000');
-    mainWindow.webContents.openDevTools(); // dev only
-  } else {
-    mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
-  }
+  win.loadURL('http://localhost:3000'); // React frontend
+}
+
+function startDjangoServer() {
+  const script = path.join(__dirname, 'backend', 'venv', 'Scripts', 'python.exe');
+  const manage = path.join(__dirname, 'backend', 'manage.py');
+  djangoProcess = spawn(script, [manage, 'runserver', '8000']);
+
+  djangoProcess.stdout.on('data', (data) => {
+    console.log(`Django: ${data}`);
+  });
+  djangoProcess.stderr.on('data', (data) => {
+    console.error(`Django error: ${data}`);
+  });
 }
 
 app.whenReady().then(() => {
+  startDjangoServer();
   createWindow();
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
-  });
 });
 
 app.on('window-all-closed', () => {
+  if (djangoProcess) djangoProcess.kill();
   if (process.platform !== 'darwin') app.quit();
-});
-
-// Handle folder picking
-ipcMain.handle('dialog:openFolder', async () => {
-  const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
-  return result.filePaths[0];
 });
